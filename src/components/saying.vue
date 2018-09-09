@@ -6,6 +6,7 @@
       left: left + 'px'
     }"
     @click="toggleMove"
+    :title="isMoving ? '点击停止' : '点击运动'"
 >
   <div class="username">{{username}}</div>
   <div class="content">{{content}}</div>
@@ -101,8 +102,8 @@ export default {
       if (this.isMoving) {
         clearTimeout(this.timer);
         this.distence = 0;
-      } else {
-        this.timer = setTimeout(this.update, this.time);
+      } else if (this.distence === 0) {
+        setTimeout(this.update, this.time);
       }
       this.isMoving = !this.isMoving;
     }
@@ -127,10 +128,14 @@ export default {
   background-color: white;
   border-radius: 10px;
   cursor: pointer;
-  transition: all .25s;
+  z-index: 1;
 }
 .one-saying:active {
   transform: scale(.9);
+}
+.one-saying:hover {
+  transform: scale(1.1);
+  z-index: 2;
 }
 .one-saying-clicked {
   box-shadow: 0 0 20px .5px #ccc;

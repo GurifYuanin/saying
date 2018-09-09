@@ -31,7 +31,9 @@ export default {
       vh: window.innerHeight - 200,
       bgX: 0,
       bgY: 0,
-      comments: [],
+      comments: process.env.NODE_ENV === 'development' ? [
+        {username: '1', content: '1'}
+      ] : [],
       modaling: false,
     };
   },
@@ -67,9 +69,11 @@ export default {
       this.vw = window.innerWidth - 200;
       this.vh = window.innerHeight - 200;
     });
-    axios.get('/index.php/saying/Message/getSayingList').then(response => {
-      this.comments = response.data;
-    }).catch(err => console.error(err));
+    try {
+      axios.get('/index.php/saying/Message/getSayingList').then(response => {
+        this.comments = response.data;
+      }).catch(err => console.error(err));
+    } catch (e) {}
   },
 }
 </script>
@@ -87,7 +91,7 @@ body {
   height: 100%;
   height: 100vh;
   overflow: hidden;
-  background-image: url('/static/images/bg.png');
+  background-image: url('./assets/bg.png');
   background-repeat: repeat;
   transition: all 1s linear;
 }
