@@ -15,6 +15,7 @@
     </template>
     <Operation @add="add"/>
     <Modal v-show="modaling" @toggleModal="toggleModal" @add="addOne"/>
+    <Range @filterComments="filterComments" />
   </div>
 </template>
 
@@ -23,6 +24,7 @@ import axios from 'axios';
 import Saying from '@/components/saying.vue';
 import Operation from '@/components/operation.vue';
 import Modal from '@/components/modal.vue';
+import Range from '@/components/range.vue';
 export default {
   name: 'App',
   data () {
@@ -32,7 +34,7 @@ export default {
       bgX: 0,
       bgY: 0,
       comments: process.env.NODE_ENV === 'development' ? [
-        {username: '1', content: '1'}
+        {username: '1', content: '1', saying_id: '1'}
       ] : [],
       modaling: false,
     };
@@ -53,18 +55,36 @@ export default {
     },
     toggleModal () {
       this.modaling = !this.modaling;
+    },
+    filterComments (num) {
+      if (num < this.comments.length) {
+        this.comments.splice(num);
+      } else if (process.env.NODE_ENV === 'development') {
+        while (this.comments.length < num) {
+          this.comments.push({
+            username: '何二狗',
+            content: '你好呀',
+            saying_id: this.comments.length
+          });
+        }
+      } else {
+        axios.get('/index.php/saying/Message/getSayingList?size=' + num).then(response => {
+          this.comments = response.data;
+        }).catch(err => console.error(err));
+      }
     }
   },
   components: {
     Saying,
     Operation,
-    Modal
+    Modal,
+    Range
   },
   created () {
-    setInterval(() => {
-      this.bgX = (this.bgX + 100) % Number.MAX_SAFE_INTEGER;
-      this.bgY = (this.bgY + 100) % Number.MAX_SAFE_INTEGER;
-    }, 1000);
+    // setInterval(() => {
+    //   this.bgX = (this.bgX + 100) % Number.MAX_SAFE_INTEGER;
+    //   this.bgY = (this.bgY + 100) % Number.MAX_SAFE_INTEGER;
+    // }, 1000);
     window.addEventListener('resize', () => {
       this.vw = window.innerWidth - 200;
       this.vh = window.innerHeight - 200;
@@ -86,6 +106,7 @@ body {
 }
 
 #app {
+  position:relative;
   margin: 0;
   padding: 0;
   height: 100%;

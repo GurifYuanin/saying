@@ -68,7 +68,7 @@ export default {
       d90: Math.PI / 2,
       d180: Math.PI,
       d270: Math.PI / 2 * 3,
-      d360: Math.PI * 2
+      d360: Math.PI * 2,
     };
   },
   computed: {
@@ -78,8 +78,9 @@ export default {
   },
   methods: {
     update () {
-      let xSpeed = Math.cos(this.deg) * this.speed,
-          ySpeed = Math.sin(this.deg) * this.speed;
+      let xSpeed = Math.cos(this.deg) * this.speed, // x 轴分速度
+          ySpeed = Math.sin(this.deg) * this.speed; // y 轴分速度
+      // x 轴移动到边界
       let w = (this.deg < this.d90 || this.deg > this.d270) ?
               (this.vw - (this.vw === this.left ? 0 : this.left)) / Math.abs(xSpeed) :
               this.left / Math.abs(xSpeed);
@@ -101,8 +102,8 @@ export default {
     toggleMove () {
       if (this.isMoving) {
         clearTimeout(this.timer);
-        this.distence = 0;
-      } else if (this.distence === 0) {
+        // this.distence = 0;
+      } else {
         setTimeout(this.update, this.time);
       }
       this.isMoving = !this.isMoving;
